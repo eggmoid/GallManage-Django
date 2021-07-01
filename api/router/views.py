@@ -4,7 +4,7 @@ from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
 
 from api.models.post.models import Post
-from server.tasks import debug_task
+from server.tasks import sync_gall
 
 from .serializers import PostSerializer
 
@@ -45,5 +45,5 @@ class PostViewSet(viewsets.ModelViewSet):
 class SyncViewSet(viewsets.ViewSet):
 
     def create(self, request, *args, **kwargs):
-        debug_task.delay()
+        sync_gall.delay()
         return HttpResponse(status=202)

@@ -1,0 +1,4 @@
+#!/bin/bash
+celery -A server worker -l INFO &
+celery -A server beat -l INFO &
+celery -A server flower --port=5555
