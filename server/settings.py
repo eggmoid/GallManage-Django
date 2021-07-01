@@ -137,6 +137,14 @@ DATABASES = {
     }
 }
 
+# Celery
+CELERY_BROKER_URL = get_secret('BROKER_URL')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_BACKEND = get_secret('CELERY_RESULT_BACKEND')
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Seoul'
+
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
