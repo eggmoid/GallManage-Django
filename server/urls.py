@@ -14,6 +14,8 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 import user_agents
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.shortcuts import redirect
 from django.urls import include, path, re_path
@@ -73,6 +75,5 @@ urlpatterns = [
          name='cschema-redoc'),
     path('', root_redirect),
     path('api/', include('api.router.urls')),
-] + required_urlpatterns
-# ] + required_urlpatterns + static(settings.STATIC_URL,
-#                                   document_root=settings.STATIC_ROOT)
+] + required_urlpatterns + static(settings.STATIC_URL,
+                                  document_root=settings.STATIC_ROOT)
