@@ -3,6 +3,7 @@ import re
 import requests
 
 from celery import Celery
+from celery.schedules import crontab
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 
@@ -62,3 +63,11 @@ def sync_gall():
 @app.task(bind=True)
 def debug_task(self):
     print(f'Request: {self.request!r}')
+
+
+app.conf.beat_schedule = {
+    'add-every-5-minutes-crontab': {
+        'task': 'server.tasks.sync_gall',
+        'schedule': crontab(minute='*/5'),
+    },
+}
