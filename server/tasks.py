@@ -1,6 +1,6 @@
 import os
-import re
 import requests
+import re
 
 from celery import Celery
 from celery.schedules import crontab
@@ -31,10 +31,29 @@ def map_post(e: str):
 
 
 @app.task
-def sync_gall():
+def save_detail(num, refresh=False):
+    from api.models.detail_post.models import DetailPost
     from api.models.post.models import Post
-    page = 1
+    URL = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={num}"
+    try:
+        post = Post.objects.get(num=num)
+    except Post.DoesNotExist:
+        return False
+    resp = requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}).text
+    resp = re.sub('<script.*?</script>', '', resp, flags=re.DOTALL)
+    (detail, created) = DetailPost.objects.get_or_create(num=post)
+    if created or (refresh and "/derror/deleted/girlgroup/minor" not in resp):
+        detail.detail = resp
+        detail.save()
+
+
+@app.task
+def sync_gall(page=1, page_end=0):
+    from api.models.post.models import Post
+    from django.conf import settings
     URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&page="
+    MONITOR = settings.MONITOR
+    MONITOR_TITLE = [title.decode('utf-8') for title in MONITOR.sdiff('TITLE')]
     last_num = Post.objects.last().num
     while True:
         resp = requests.get(f"{URL}{page}",
@@ -45,10 +64,13 @@ def sync_gall():
             map(map_post, re.findall('ub-content.*?</tr>',
                                      resp,
                                      flags=re.DOTALL)))
-        if not len([e for e in source if e[0] > last_num]):
+        if page_end and page > page_end:
             return
+        if not page_end and not len([e for e in source if e[0] > last_num]):
+            return
+
         for e in source:
-            (post, created) = Post.objects.get_or_create(num=e[0])
+            (post, _) = Post.objects.get_or_create(num=e[0])
             post.title = e[1]
             post.name = e[2]
             post.idip = e[3]
@@ -57,6 +79,8 @@ def sync_gall():
             post.gall_count = e[6]
             post.gall_recommend = e[7]
             post.save()
+            if [e[1] for title in MONITOR_TITLE if re.search(title, e[1])]:
+                save_detail.delay(e[0])
         page += 1
 
 

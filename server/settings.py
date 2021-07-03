@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import json
 import os
+import redis
 
 from celery.schedules import crontab
 from pathlib import Path
@@ -54,6 +55,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'drf_yasg',
+    'api.models.detail_post',
     'api.models.post',
     'server',
 ]
@@ -192,3 +194,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MONITOR_URL = get_secret('MONITOR_URL')
+MONITOR = redis.Redis.from_url(MONITOR_URL)
