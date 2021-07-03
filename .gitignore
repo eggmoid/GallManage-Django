@@ -132,3 +132,4 @@ secrets.json
 static
 wallet
 .vim
+celerybeat-schedule.db
