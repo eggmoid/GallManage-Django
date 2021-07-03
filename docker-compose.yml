@@ -3,23 +3,31 @@ services:
   django:
     image: django
     command: sh -c "gunicorn --bind 0:8000 server.wsgi:application"
+    environment:
+      TZ: "Asia/Seoul"
     network_mode: "host"
     restart: always
 
   celery:
     image: django
     command: sh -c "celery -A server worker -l INFO"
+    environment:
+      TZ: "Asia/Seoul"
     network_mode: "host"
     restart: always
 
   celery-beat:
     image: django
     command: sh -c "celery -A server beat -l INFO"
+    environment:
+      TZ: "Asia/Seoul"
     network_mode: "host"
     restart: always
 
   celery-flower:
     image: django
     command: sh -c "celery -A server flower --port=5555"
+    environment:
+      TZ: "Asia/Seoul"
     network_mode: "host"
     restart: always
