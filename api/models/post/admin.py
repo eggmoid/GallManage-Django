@@ -1,13 +1,21 @@
 from django.contrib import admin
+from django.utils.html import format_html
 
 from .models import Post
 
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
+
+    def TITLE(self, obj):
+        _url = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={obj.num}"
+        return format_html("<a href='{url}'>{title}</a>",
+                           url=_url,
+                           title=obj.title)
+
     list_display = [
         'num',
-        'title',
+        'TITLE',
         'name',
         'idip',
         'date',
