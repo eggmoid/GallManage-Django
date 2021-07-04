@@ -7,6 +7,15 @@ from .models import Post
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
 
+    def has_add_permission(self, request, obj=None) -> bool:
+        return False
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False
+
+    def has_delete_permission(self, request, obj=None) -> bool:
+        return False
+
     def TITLE(self, obj):
         _url = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={obj.num}"
         return format_html("<a href='{url}'>{title}</a>",
