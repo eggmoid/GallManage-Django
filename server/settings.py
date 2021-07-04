@@ -137,7 +137,10 @@ DATABASES = {
         'NAME': get_secret('DB_SERVICE'),
         'USER': get_secret('DB_USER'),
         'PASSWORD': get_secret('DB_PASSWORD'),
-        'CONN_MAX_AGE': None
+        'CONN_MAX_AGE': None,
+        'OPTIONS': {
+            'threaded': True,
+        }
     }
 }
 
