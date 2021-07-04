@@ -51,7 +51,7 @@ def save_detail(num, refresh=False):
 def sync_gall(page=1, page_end=0):
     from api.models.post.models import Post
     from django.conf import settings
-    URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&page="
+    URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&list_num=100&page="
     MONITOR = settings.MONITOR
     MONITOR_TITLE = [title.decode('utf-8') for title in MONITOR.sdiff('TITLE')]
     last_num = Post.objects.last().num
@@ -90,8 +90,12 @@ def debug_task(self):
 
 
 app.conf.beat_schedule = {
-    'add-every-5-minutes-crontab': {
+    'daytime': {
         'task': 'server.tasks.sync_gall',
-        'schedule': crontab(minute='*/5'),
+        'schedule': crontab(minute='*/3', hour='8-23,0'),
+    },
+    'nignttime': {
+        'task': 'server.tasks.sync_gall',
+        'schedule': crontab(minute='*/5', hour='1-7'),
     },
 }
