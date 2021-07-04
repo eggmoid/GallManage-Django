@@ -136,7 +136,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.oracle',
         'NAME': get_secret('DB_SERVICE'),
         'USER': get_secret('DB_USER'),
-        'PASSWORD': get_secret('DB_PASSWORD')
+        'PASSWORD': get_secret('DB_PASSWORD'),
+        'CONN_MAX_AGE': None
     }
 }
 
