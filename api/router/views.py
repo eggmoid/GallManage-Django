@@ -16,7 +16,8 @@ from .serializers import (
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-num')
     serializer_class = PostSerializer
-    http_method_names = ['get', 'post']
+    http_method_names = ['get']
+    # http_method_names = ['get', 'post']
 
     def filter_queryset(self, queryset):
         qs = queryset

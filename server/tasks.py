@@ -54,7 +54,18 @@ def sync_gall(page=1, page_end=0):
     URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&list_num=100&page="
     MONITOR = settings.MONITOR
     MONITOR_TITLE = [title.decode('utf-8') for title in MONITOR.sdiff('TITLE')]
-    last_num = Post.objects.last().num
+    try:
+        last_num = Post.objects.last().num
+    except AttributeError:
+        resp = requests.get(f"{URL}{page}",
+                            headers={
+                                "User-Agent": "Mozilla/5.0"
+                            }).text
+        source = list(
+            map(map_post, re.findall('ub-content.*?</tr>',
+                                     resp,
+                                     flags=re.DOTALL)))
+        last_num = source[0][0]
     while True:
         resp = requests.get(f"{URL}{page}",
                             headers={
