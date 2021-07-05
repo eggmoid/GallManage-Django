@@ -42,7 +42,9 @@ def save_detail(num, refresh=False):
     resp = requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}).text
     resp = re.sub('<script.*?</script>', '', resp, flags=re.DOTALL)
     (detail, created) = DetailPost.objects.get_or_create(num=post)
-    if created or (refresh and "/derror/deleted/girlgroup/minor" not in resp):
+    if created or (refresh and
+                   ("/derror/deleted/girlgroup/minor" not in resp) and
+                   resp != ""):
         detail.detail = resp
         detail.save()
 
