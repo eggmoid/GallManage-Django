@@ -1,4 +1,5 @@
-from django.http.response import Http404, HttpResponse
+from django.db.models import Count, Sum
+from django.http.response import Http404, HttpResponse, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
@@ -10,6 +11,7 @@ from server.tasks import sync_gall
 from .serializers import (
     DetailPostSerializer,
     PostSerializer,
+    RankingSerializer,
 )
 
 
@@ -17,7 +19,6 @@ class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all().order_by('-num')
     serializer_class = PostSerializer
     http_method_names = ['get']
-    # http_method_names = ['get', 'post']
 
     def filter_queryset(self, queryset):
         qs = queryset
@@ -68,3 +69,27 @@ class DetailViewSet(viewsets.ReadOnlyModelViewSet):
         except (Post.DoesNotExist, DetailPost.DoesNotExist):
             raise Http404()
         return HttpResponse(detail.detail)
+
+
+class RankingViewSet(viewsets.ViewSet):
+
+    @swagger_auto_schema(responses={200: RankingSerializer})
+    def list(self, request, *args, **kwargs):
+        queryset = Post.objects.filter(date__startswith="2021-07").values_list(
+            'name',
+            'idip').annotate(comment_count=Sum('comment_count')).annotate(
+                gall_count=Sum('gall_count')).annotate(
+                    gall_recommend=Sum('gall_recommend')).annotate(
+                        count=Count('*')).order_by('-count')[:20]
+        resp = {
+            "result": [{
+                "rank": idx + 1,
+                "count": q[-1],
+                "name": q[0],
+                "idip": q[1],
+                "comment_count": q[2],
+                "gall_count": q[3],
+                "gall_recommend": q[4],
+            } for idx, q in enumerate(queryset)]
+        }
+        return JsonResponse(resp)
