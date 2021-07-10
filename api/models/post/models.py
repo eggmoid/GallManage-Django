@@ -3,7 +3,7 @@ from django.db import models
 
 class Post(models.Model):
     num = models.IntegerField(primary_key=True)
-    title = models.CharField(max_length=240)
+    title = models.CharField(max_length=320)
     name = models.CharField(max_length=120)
     idip = models.CharField(max_length=20)
     date = models.CharField(max_length=19)
