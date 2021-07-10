@@ -36,6 +36,8 @@ services:
       - "./nginx/private.key:/etc/ssl/private.key"
       - "./static:/etc/nginx/django/static"
     command: nginx -g 'daemon off;'
+    environment:
+      TZ: "Asia/Seoul"
     depends_on:
       - django
       - celery
