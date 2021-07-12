@@ -13,3 +13,5 @@ class Post(models.Model):
 
     class Meta:
         db_table = 'post'
+        verbose_name = '게시글'
+        verbose_name_plural = '글 목록'

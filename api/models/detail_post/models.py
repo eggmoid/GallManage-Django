@@ -14,3 +14,5 @@ class DetailPost(models.Model):
 
     class Meta:
         db_table = 'detail_post'
+        verbose_name = '캐시된 게시글'
+        verbose_name_plural = '캐시 목록'
