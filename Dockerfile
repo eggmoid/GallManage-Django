@@ -19,4 +19,4 @@ ENV DJANGO_LOG_LEVEL DEBUG
 ENV TNS_ADMIN /usr/src/app/wallet
 ENV PYTHONUNBUFFERED 1
 COPY . .
-CMD ["gunicorn", "--bind", "0:8000", "server.wsgi:application"]
+# CMD ["gunicorn", "--bind", "0:8000", "-k", "gevent", "server.wsgi:application"]

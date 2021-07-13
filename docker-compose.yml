@@ -2,7 +2,7 @@ version: '3.9'
 services:
   django:
     image: django
-    command: sh -c "gunicorn --bind 0:8000 server.wsgi:application"
+    command: sh -c "gunicorn --bind 0:8000 -k gevent server.wsgi:application"
     environment:
       TZ: "Asia/Seoul"
     network_mode: "host"
