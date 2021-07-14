@@ -73,14 +73,26 @@ class DetailViewSet(viewsets.ReadOnlyModelViewSet):
 
 class RankingViewSet(viewsets.ViewSet):
 
-    @swagger_auto_schema(responses={200: RankingSerializer})
+    @swagger_auto_schema(manual_parameters=[
+        openapi.Parameter('date',
+                          openapi.IN_QUERY,
+                          description='날짜 ex.2021-07',
+                          type=openapi.TYPE_STRING),
+        openapi.Parameter('num',
+                          openapi.IN_QUERY,
+                          description='최대 순위',
+                          type=openapi.TYPE_INTEGER)
+    ],
+                         responses={200: RankingSerializer})
     def list(self, request, *args, **kwargs):
-        queryset = Post.objects.filter(date__startswith="2021-07").values_list(
+        date = request.GET.get('date', "2021-07")
+        num = int(request.GET.get('num', 20))
+        queryset = Post.objects.filter(date__startswith=date).values_list(
             'name',
             'idip').annotate(comment_count=Sum('comment_count')).annotate(
                 gall_count=Sum('gall_count')).annotate(
                     gall_recommend=Sum('gall_recommend')).annotate(
-                        count=Count('*')).order_by('-count')[:20]
+                        count=Count('*')).order_by('-count')[:num]
         resp = {
             "result": [{
                 "rank": idx + 1,
