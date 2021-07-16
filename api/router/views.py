@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db.models import Count, Sum
 from django.http.response import Http404, HttpResponse, JsonResponse
 from drf_yasg import openapi
@@ -7,6 +6,7 @@ from rest_framework import viewsets
 
 from api.models.detail_post.models import DetailPost
 from api.models.post.models import Post
+from server.settings import MONITOR
 from server.tasks import sync_gall
 
 from .serializers import (
@@ -113,8 +113,19 @@ class KeywordViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(responses={200: KeywordSerializer})
     def list(self, request, *args, **kwargs):
-        MONITOR = settings.MONITOR
         MONITOR_TITLE = [
             title.decode('utf-8') for title in MONITOR.sdiff('TITLE')
         ]
         return JsonResponse({'keyword': MONITOR_TITLE})
+
+    @swagger_auto_schema(request_body=KeywordSerializer)
+    def create(self, request, *args, **kwargs):
+        serializer = KeywordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        for keyword in serializer.data['keyword']:
+            MONITOR.sadd('TITLE', keyword)
+        return HttpResponse(status=201)
+
+    def destroy(self, request, pk, *args, **kwargs):
+        MONITOR.srem('TITLE', pk)
+        return HttpResponse(status=204)
