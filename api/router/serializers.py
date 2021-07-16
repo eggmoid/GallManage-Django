@@ -31,3 +31,7 @@ class RankSerializer(serializers.Serializer):
 
 class RankingSerializer(serializers.Serializer):
     ranking = RankSerializer(many=True)
+
+
+class KeywordSerializer(serializers.Serializer):
+    keyword = serializers.ListField(child=serializers.CharField())

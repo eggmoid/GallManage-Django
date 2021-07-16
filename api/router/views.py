@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Count, Sum
 from django.http.response import Http404, HttpResponse, JsonResponse
 from drf_yasg import openapi
@@ -10,6 +11,7 @@ from server.tasks import sync_gall
 
 from .serializers import (
     DetailPostSerializer,
+    KeywordSerializer,
     PostSerializer,
     RankingSerializer,
 )
@@ -105,3 +107,14 @@ class RankingViewSet(viewsets.ViewSet):
             } for idx, q in enumerate(queryset)]
         }
         return JsonResponse(resp)
+
+
+class KeywordViewSet(viewsets.ViewSet):
+
+    @swagger_auto_schema(responses={200: KeywordSerializer})
+    def list(self, request, *args, **kwargs):
+        MONITOR = settings.MONITOR
+        MONITOR_TITLE = [
+            title.decode('utf-8') for title in MONITOR.sdiff('TITLE')
+        ]
+        return JsonResponse({'keyword': MONITOR_TITLE})

@@ -3,6 +3,7 @@ from rest_framework import routers
 
 from .views import (
     DetailViewSet,
+    KeywordViewSet,
     PostViewSet,
     RankingViewSet,
     SyncViewSet,
@@ -11,6 +12,7 @@ from .views import (
 router = routers.DefaultRouter(trailing_slash=False)
 
 router.register(r'detail', DetailViewSet, basename='detail')
+router.register(r'keywords', KeywordViewSet, basename='keyword')
 router.register(r'posts', PostViewSet, basename='post')
 router.register(r'ranking', RankingViewSet, basename='ranking')
 router.register(r'sync', SyncViewSet, basename='sync')
