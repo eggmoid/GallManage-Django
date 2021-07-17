@@ -33,8 +33,8 @@ class BPostAdmin(admin.ModelAdmin):
         'gall_recommend',
     ]
     search_fields = [
-        'name',
-        'idip',
+        '=name',
+        '=idip',
     ]
 
     def get_ordering(self, request):
