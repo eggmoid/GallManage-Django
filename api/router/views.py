@@ -3,6 +3,7 @@ from django.http.response import Http404, HttpResponse, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
+from rest_framework.permissions import IsAdminUser
 
 from api.models.detail_post.models import DetailPost
 from api.models.post.models import Post
@@ -110,6 +111,7 @@ class RankingViewSet(viewsets.ViewSet):
 
 
 class KeywordViewSet(viewsets.ViewSet):
+    permission_classes = (IsAdminUser,)
 
     @swagger_auto_schema(responses={200: KeywordSerializer})
     def list(self, request, *args, **kwargs):
