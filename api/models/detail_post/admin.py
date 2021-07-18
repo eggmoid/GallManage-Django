@@ -15,7 +15,13 @@ class DetailPostAdmin(admin.ModelAdmin):
         return False
 
     def has_delete_permission(self, request, obj=None) -> bool:
+        if request.user.username == 'admin':
+            return True
         return False
+
+    def log_deletion(self, request, object, message):
+        # return super().log_addition(request, object, message)
+        return
 
     def title(self, obj):
         return obj.num.title
