@@ -14,6 +14,14 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.autodiscover_tasks
 
 
+@app.task
+def backup_post():
+    from api.models.post.models import Post
+    from api.models.post_back.models import BPost
+    max_num = BPost.objects.order_by('-num').first().num
+    BPost.objects.bulk_create(list(Post.objects.filter(num__gt=max_num)))
+
+
 def map_post(e: str):
     num = int((re.findall(r'no=(\d+)', e) or [0])[0])
     title = (re.findall(r'</em>(.*?)</a>', e) or [""])[0]

@@ -8,9 +8,13 @@ from rest_framework.permissions import IsAdminUser
 from api.models.detail_post.models import DetailPost
 from api.models.post.models import Post
 from server.settings import MONITOR
-from server.tasks import sync_gall
+from server.tasks import (
+    backup_post,
+    sync_gall,
+)
 
 from .serializers import (
+    BackupSerializer,
     DetailPostSerializer,
     KeywordSerializer,
     PostSerializer,
@@ -49,6 +53,17 @@ class PostViewSet(viewsets.ModelViewSet):
     @swagger_auto_schema(auto_schema=None)
     def retrieve(self, request, *args, **kwargs):
         return super().retrieve(request, *args, **kwargs)
+
+
+class BackupViewSet(viewsets.ViewSet):
+
+    @swagger_auto_schema(request_body=BackupSerializer)
+    def create(self, request, *args, **kwargs):
+        # serializer = BackupSerializer(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # to = serializer.data.get('to')
+        backup_post.delay()
+        return HttpResponse(status=202)
 
 
 class SyncViewSet(viewsets.ViewSet):

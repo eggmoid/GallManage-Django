@@ -1,4 +1,3 @@
-from django.db.models.query_utils import select_related_descend
 from rest_framework import serializers
 
 from api.models.detail_post.models import DetailPost
@@ -10,6 +9,10 @@ class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = '__all__'
+
+
+class BackupSerializer(serializers.Serializer):
+    to = serializers.IntegerField(required=False)
 
 
 class DetailPostSerializer(serializers.ModelSerializer):
