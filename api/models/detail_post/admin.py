@@ -23,8 +23,17 @@ class DetailPostAdmin(admin.ModelAdmin):
         # return super().log_addition(request, object, message)
         return
 
+    def NUM(self, obj):
+        _cache = reverse('detail-detail', args=[obj.num.num])
+        return format_html("<a href='{url}'>{num}</a>",
+                           url=_cache,
+                           num=obj.num.num)
+
     def title(self, obj):
-        return obj.num.title
+        _url = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={obj.num.num}"
+        return format_html("<a href='{url}'>{title}</a>",
+                           url=_url,
+                           title=obj.num.title)
 
     def name(self, obj):
         return obj.num.name
@@ -44,7 +53,7 @@ class DetailPostAdmin(admin.ModelAdmin):
         return format_html("<a href='{url}'>CACHE</a>", url=_cache)
 
     list_display = [
-        'num',
+        'NUM',
         'title',
         'name',
         'idip',
