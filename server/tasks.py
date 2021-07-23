@@ -42,17 +42,23 @@ def map_post(e: str):
 def save_detail(num, refresh=False):
     from api.models.detail_post.models import DetailPost
     from api.models.post.models import Post
-    URL = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={num}"
+    # URL = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={num}"
+    URL = f"https://m.dcinside.com/board/girlgroup/{num}"
     try:
         post = Post.objects.get(num=num)
     except Post.DoesNotExist:
         return False
-    resp = requests.get(URL, headers={"User-Agent": "Mozilla/5.0"}).text
-    resp = re.sub('<script.*?</script>', '', resp, flags=re.DOTALL)
+    _resp = requests.get(
+        URL,
+        headers={
+            "User-Agent":
+                "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"
+        })
+    resp = re.sub('<script.*?</script>', '', _resp.text, flags=re.DOTALL)
     (detail, created) = DetailPost.objects.get_or_create(num=post)
     if created or (refresh and
                    ("/derror/deleted/girlgroup/minor" not in resp) and
-                   resp != ""):
+                   resp != "" and _resp.status_code == 200):
         detail.detail = resp
         detail.save()
 
