@@ -107,7 +107,7 @@ def sync_gall(page=1, page_end=0):
             post.gall_recommend = e[7]
             post.save()
             if [e[1] for title in MONITOR_TITLE if re.search(title, e[1])]:
-                save_detail.delay(e[0])
+                save_detail.delay(e[0], True)
         page += 1
 
 
