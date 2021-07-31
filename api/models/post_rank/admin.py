@@ -46,6 +46,5 @@ class PostRankAdmin(admin.ModelAdmin):
         } for idx, q in enumerate(
             qs.filter(date__startswith='2021-07').values_list(
                 'name', 'idip').annotate(**metrics).order_by('-count'))]
-        print(response.context_data['summary'][0])
 
         return response
