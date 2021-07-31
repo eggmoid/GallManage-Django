@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'api.models.detail_post',
     'api.models.post',
     'api.models.post_back',
+    'api.models.post_rank',
     'server',
 ]
 

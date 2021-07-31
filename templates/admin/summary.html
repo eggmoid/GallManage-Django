@@ -1,0 +1,66 @@
+{% extends "admin/change_list.html" %}
+
+{% block content_title %}
+    <h1> 7월 갤창랭킹 </h1>
+{% endblock %}
+
+{% block result_list %}
+<div class="results">
+  <table>
+    <thead>
+      <tr>
+        <th>
+          <div class="text">
+            <a href="#">순위</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">글 수</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">닉네임</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">ID/IP</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">받은 댓글 수</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">조회수</a>
+          </div>
+        </th>
+        <th>
+          <div class="text">
+            <a href="#">받은 개추 수</a>
+          </div>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for row in summary %}
+      <tr class="row">
+        <td> {{ row.rank }} </td>
+        <td> {{ row.count }} </td>
+        <td> {{ row.name }} </td>
+        <td> {{ row.idip }} </td>
+        <td> {{ row.comment_count }} </td>
+        <td> {{ row.gall_count }} </td>
+        <td> {{ row.gall_recommend }} </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
+
+{% block pagination %}{% endblock %}
