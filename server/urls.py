@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.views.generic.base import RedirectView
 import user_agents
 from django.conf import settings
 from django.conf.urls.static import static
@@ -52,6 +53,7 @@ required_urlpatterns = [
 ]
 
 urlpatterns = [
+    re_path(r'^favicon\.ico$', RedirectView.as_view(url='/static/favicon.ico')),
     re_path(r'^swagger(?P<format>.json|.yaml)$',
             SchemaView.without_ui(cache_timeout=0),
             name='schema-json'),
