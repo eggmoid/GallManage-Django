@@ -29,19 +29,58 @@
             <span>ID/IP</span>
           </div>
         </th>
+        {% if request.GET.o == "4" %}
+        <th class="sorted">
+        {% else %}
         <th>
+        {% endif %}
+          {% if request.GET.o == "4" %}
+          <div class="sortoptions">
+            <a class="sortremove" href="."></a>
+          </div>
+          {% endif %}
           <div class="text">
+            {% if request.GET.o == "4" %}
+            <a href=".">받은 댓글 수</a>
+            {% else %}
             <a href="?o=4">받은 댓글 수</a>
+            {% endif %}
           </div>
         </th>
+        {% if request.GET.o == "5" %}
+        <th class="sorted">
+        {% else %}
         <th>
+        {% endif %}
+          {% if request.GET.o == "5" %}
+          <div class="sortoptions">
+            <a class="sortremove" href="."></a>
+          </div>
+          {% endif %}
           <div class="text">
+            {% if request.GET.o == "5" %}
+            <a href=".">조회수</a>
+            {% else %}
             <a href="?o=5">조회수</a>
+            {% endif %}
           </div>
         </th>
+        {% if request.GET.o == "6" %}
+        <th class="sorted">
+        {% else %}
         <th>
+        {% endif %}
+          {% if request.GET.o == "6" %}
+          <div class="sortoptions">
+            <a class="sortremove" href="."></a>
+          </div>
+          {% endif %}
           <div class="text">
+            {% if request.GET.o == "6" %}
+            <a href=".">받은 개추 수</a>
+            {% else %}
             <a href="?o=6">받은 개추 수</a>
+            {% endif %}
           </div>
         </th>
       </tr>
