@@ -35,6 +35,16 @@ class PostRankAdmin(admin.ModelAdmin):
             'count': Count('*')
         }
 
+        _order = request.GET.get('o')
+        if _order == '4':
+            order = '-comment_count'
+        elif _order == '5':
+            order = '-gall_count'
+        elif _order == '6':
+            order = '-gall_recommend'
+        else:
+            order = '-count'
+
         response.context_data['summary'] = [{
             "rank": idx + 1,
             "count": q[-1],
@@ -45,6 +55,6 @@ class PostRankAdmin(admin.ModelAdmin):
             "gall_recommend": q[4],
         } for idx, q in enumerate(
             qs.filter(date__startswith='2021-07').values_list(
-                'name', 'idip').annotate(**metrics).order_by('-count'))]
+                'name', 'idip').annotate(**metrics).order_by(order))]
 
         return response
