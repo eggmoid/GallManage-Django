@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib import admin
 from django.db.models import Count, Sum
 
@@ -54,7 +56,8 @@ class PostRankAdmin(admin.ModelAdmin):
             "gall_count": q[3],
             "gall_recommend": q[4],
         } for idx, q in enumerate(
-            qs.filter(date__startswith='2021-07').values_list(
-                'name', 'idip').annotate(**metrics).order_by(order))]
+            qs.filter(date__startswith=datetime.datetime.today().strftime(
+                "%Y-%m")).values_list('name', 'idip').annotate(
+                    **metrics).order_by(order))]
 
         return response

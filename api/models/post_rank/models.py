@@ -1,9 +1,12 @@
+import datetime
+
 from api.models.post.models import Post
 
 
 class PostRank(Post):
 
     class Meta:
+        month = datetime.datetime.today().month
         proxy = True
-        verbose_name = '7월 갤창랭킹'
-        verbose_name_plural = '7월 갤창랭킹'
+        verbose_name = f'{month}월 갤창랭킹'
+        verbose_name_plural = f'{month}월 갤창랭킹'
