@@ -55,6 +55,11 @@ def save_detail(num, refresh=False):
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"
         })
     resp = re.sub('<script.*?</script>', '', _resp.text, flags=re.DOTALL)
+    resp = re.sub(
+        r'<img src=("?https://nstatic.dcinside.com/dc/m/img/dccon_loading_nobg200.png"?).*?data-original="?(.*?)"? ',
+        r'<img src="\2" ',
+        resp,
+        flags=re.DOTALL)
     (detail, created) = DetailPost.objects.get_or_create(num=post)
     if created or (refresh and
                    ("/derror/deleted/girlgroup/minor" not in resp) and
