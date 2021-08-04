@@ -56,10 +56,13 @@ def save_detail(num, refresh=False):
         })
     resp = re.sub('<script.*?</script>', '', _resp.text, flags=re.DOTALL)
     resp = re.sub(
-        r'<img src=("?https://nstatic.dcinside.com/dc/m/img/dccon_loading_nobg200.png"?).*?data-original="?(.*?)"? ',
-        r'<img src="\2" ',
-        resp,
-        flags=re.DOTALL)
+        r'<img src=("?.*?"?).*?data-original="?(.*?)"? ',
+        r'<img src="\2" ', resp)
+    # resp = re.sub(
+    #     r'<img src=("?https://nstatic.dcinside.com/dc/m/img/dccon_loading_nobg200.png"?).*?data-original="?(.*?)"? ',
+    #     r'<img src="\2" ',
+    #     resp,
+    #     flags=re.DOTALL)
     (detail, created) = DetailPost.objects.get_or_create(num=post)
     if created or (refresh and
                    ("/derror/deleted/girlgroup/minor" not in resp) and
