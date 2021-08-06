@@ -7,7 +7,7 @@ from server.tasks import save_detail
 
 
 @admin.action(description='글 내용 저장')
-def save_detail(modeladmin, request, queryset):
+def save_post(modeladmin, request, queryset):
     for q in queryset:
         save_detail.delay(q.num, True)
 
@@ -44,7 +44,7 @@ class PostAdmin(admin.ModelAdmin):
         'name',
         'idip',
     ]
-    actions = [save_detail]
+    actions = [save_post]
 
     def get_ordering(self, request):
         return ['-num']
