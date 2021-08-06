@@ -3,6 +3,14 @@ from django.utils.html import format_html
 
 from .models import Post
 
+from server.tasks import save_detail
+
+
+@admin.action(description='글 내용 저장')
+def save_detail(modeladmin, request, queryset):
+    for q in queryset:
+        save_detail.delay(q.num, True)
+
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
@@ -36,6 +44,7 @@ class PostAdmin(admin.ModelAdmin):
         'name',
         'idip',
     ]
+    actions = [save_detail]
 
     def get_ordering(self, request):
         return ['-num']
