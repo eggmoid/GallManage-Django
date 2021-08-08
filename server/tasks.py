@@ -21,7 +21,7 @@ def backup_post():
         cursor.execute("SELECT MAX(NUM) FROM BPOST;")
         max_num = cursor.fetchone()[0]
         cursor.execute(
-            f"INSERT INTO POST (SELECT * FROM BPOST WHERE NUM > {max_num});")
+            f"INSERT INTO BPOST (SELECT * FROM POST WHERE NUM > {max_num});")
 
 
 def map_post(e: str):
