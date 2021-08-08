@@ -16,10 +16,12 @@ app.autodiscover_tasks
 
 @app.task
 def backup_post():
-    from api.models.post.models import Post
-    from api.models.post_back.models import BPost
-    max_num = BPost.objects.order_by('-num').first().num
-    BPost.objects.bulk_create(list(Post.objects.filter(num__gt=max_num)))
+    from django.db import connection
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT MAX(NUM) FROM BPOST;")
+        max_num = cursor.fetchone()[0]
+        cursor.execute(
+            f"INSERT INTO POST (SELECT * FROM BPOST WHERE NUM > {max_num});")
 
 
 def map_post(e: str):
@@ -55,9 +57,8 @@ def save_detail(num, refresh=False):
                 "Mozilla/5.0 (iPhone; CPU iPhone OS 10_3_1 like Mac OS X) AppleWebKit/603.1.30 (KHTML, like Gecko) Version/10.0 Mobile/14E304 Safari/602.1"
         })
     resp = re.sub('<script.*?</script>', '', _resp.text, flags=re.DOTALL)
-    resp = re.sub(
-        r'<img src=("?.*?"?).*?data-original="?(.*?)"? ',
-        r'<img src="\2" ', resp)
+    resp = re.sub(r'<img src=("?.*?"?).*?data-original="?(.*?)"? ',
+                  r'<img src="\2" ', resp)
     # resp = re.sub(
     #     r'<img src=("?https://nstatic.dcinside.com/dc/m/img/dccon_loading_nobg200.png"?).*?data-original="?(.*?)"? ',
     #     r'<img src="\2" ',
