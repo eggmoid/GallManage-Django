@@ -1,14 +1,15 @@
 {% extends "admin/change_list.html" %}
 
 {% block content_title %}
+    {# now "n" as month #}
     {% if request.GET.o == "4" %}
-    <h1> {% now "n" %}월 갤창랭킹 (ver. 받은 댓글 수)</h1>
+    <h1> {{ month }}월 갤창랭킹 (ver. 받은 댓글 수)</h1>
     {% elif request.GET.o == "5" %}
-    <h1> {% now "n" %}월 갤창랭킹 (ver. 조회수)</h1>
+    <h1> {{ month }}월 갤창랭킹 (ver. 조회수)</h1>
     {% elif request.GET.o == "6" %}
-    <h1> {% now "n" %}월 갤창랭킹 (ver. 받은 개추 수)</h1>
+    <h1> {{ month }}월 갤창랭킹 (ver. 받은 개추 수)</h1>
     {% else %}
-    <h1> {% now "n" %}월 갤창랭킹 </h1>
+    <h1> {{ month }}월 갤창랭킹 </h1>
     {% endif %}
 {% endblock %}
 

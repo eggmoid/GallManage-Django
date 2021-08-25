@@ -47,6 +47,8 @@ class PostRankAdmin(admin.ModelAdmin):
         else:
             order = '-count'
 
+        response.context_data['month'] = (datetime.datetime.today() -
+                                          datetime.timedelta(days=5)).month
         response.context_data['summary'] = [{
             "rank": idx + 1,
             "count": q[-1],
@@ -56,8 +58,9 @@ class PostRankAdmin(admin.ModelAdmin):
             "gall_count": q[3],
             "gall_recommend": q[4],
         } for idx, q in enumerate(
-            qs.filter(date__startswith=datetime.datetime.today().strftime(
-                "%Y-%m")).values_list('name', 'idip').annotate(
-                    **metrics).order_by(order))]
+            qs.filter(date__startswith=(
+                datetime.datetime.today() - datetime.timedelta(days=5)
+            ).strftime("%Y-%m")).values_list('name', 'idip').annotate(
+                **metrics).order_by(order))]
 
         return response
