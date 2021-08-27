@@ -12,6 +12,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class BackupSerializer(serializers.Serializer):
+    _from = serializers.IntegerField(required=False)
     to = serializers.IntegerField(required=False)
 
 

@@ -15,13 +15,19 @@ app.autodiscover_tasks
 
 
 @app.task
-def backup_post():
+def backup_post(_from=None):
     from django.db import connection
     with connection.cursor() as cursor:
         cursor.execute("SELECT MAX(NUM) FROM BPOST;")
         max_num = cursor.fetchone()[0]
-        cursor.execute(
-            f"INSERT INTO BPOST (SELECT * FROM POST WHERE NUM > {max_num});")
+        if not _from or (int(_from) > int(max_num)):
+            cursor.execute(
+                f"INSERT INTO BPOST (SELECT * FROM POST WHERE NUM > {max_num});"
+            )
+        else:
+            cursor.execute(f"DELETE FROM BPOST WHERE NUM >= {_from};")
+            cursor.execute(
+                f"INSERT INTO BPOST (SELECT * FROM POST WHERE NUM >= {_from});")
 
 
 def map_post(e: str):

@@ -59,10 +59,11 @@ class BackupViewSet(viewsets.ViewSet):
 
     @swagger_auto_schema(request_body=BackupSerializer)
     def create(self, request, *args, **kwargs):
-        # serializer = BackupSerializer(data=request.data)
-        # serializer.is_valid(raise_exception=True)
+        serializer = BackupSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        _from = serializer.data.get('_from')
         # to = serializer.data.get('to')
-        backup_post.delay()
+        backup_post.delay(_from)
         return HttpResponse(status=202)
 
 
