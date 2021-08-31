@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 import json
 import os
 from os.path import join
@@ -40,6 +43,19 @@ def get_secret(setting, secrets=secrets):
     except KeyError:
         raise KeyError(f'Set the {setting} environment variable')
 
+
+sentry_sdk.init(
+    dsn=get_secret('SENTRY_DSN'),
+    integrations=[DjangoIntegration()],
+
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    # We recommend adjusting this value in production.
+    traces_sample_rate=1.0,
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True)
 
 SECRET_KEY = get_secret('SECRET_KEY')
 
