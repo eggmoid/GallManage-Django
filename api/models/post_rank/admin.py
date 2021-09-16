@@ -56,7 +56,7 @@ class PostRankAdmin(admin.ModelAdmin):
                                           datetime.timedelta(days=5)).month
         with connection.cursor() as cursor:
             cursor.execute(f"""SELECT COUNT(*) C, 
-                REGEXP_REPLACE(LISTAGG(NAME, ',') WITHIN GROUP(ORDER BY NAME), '([^,]+)(,\\1)*(,|$)', '\\1\\3'),
+                REGEXP_REPLACE(LISTAGG(NAME, ', ') WITHIN GROUP(ORDER BY NAME), '(.*?)(, \\1)*(, |$)', '\\1\\3'),
                 IDIP, SUM(COMMENT_COUNT) CC, SUM(GALL_COUNT) GC, SUM(GALL_RECOMMEND) GR
                 FROM POST WHERE POST."DATE" LIKE 
                     '{(datetime.datetime.today() - datetime.timedelta(days=5)).strftime("%Y-%m")}%'
