@@ -3,7 +3,7 @@ from django.http.response import Http404, HttpResponse, JsonResponse
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import viewsets
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import AllowAny, IsAdminUser
 
 from api.models.detail_post.models import DetailPost
 from api.models.post.models import Post
@@ -77,6 +77,7 @@ class SyncViewSet(viewsets.ViewSet):
 class DetailViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = DetailPost.objects.all().order_by('-num')
     serializer_class = DetailPostSerializer
+    permission_classes = (AllowAny,)
 
     def list(self, request, *args, **kwargs):
         return super().list(request, *args, **kwargs)
