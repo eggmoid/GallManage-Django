@@ -62,8 +62,8 @@ class DetailPostAdmin(admin.ModelAdmin):
         'cache',
     ]
     search_fields = [
-        'name',
-        'idip',
+        'num__name',
+        'num__idip',
     ]
 
     def get_ordering(self, request):
