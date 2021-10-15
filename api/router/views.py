@@ -7,7 +7,7 @@ from rest_framework.permissions import AllowAny, IsAdminUser
 
 from api.models.detail_post.models import DetailPost
 from api.models.post.models import Post
-from server.settings import MONITOR
+from server.settings import MONITOR, REDIS
 from server.tasks import (
     backup_post,
     sync_gall,
@@ -147,4 +147,33 @@ class KeywordViewSet(viewsets.ViewSet):
 
     def destroy(self, request, pk, *args, **kwargs):
         MONITOR.srem('TITLE', pk)
+        return HttpResponse(status=204)
+
+
+class RedisViewSet(viewsets.ViewSet):
+    permission_classes = (IsAdminUser,)
+
+    @swagger_auto_schema(
+        responses={200: KeywordSerializer},
+        operation_description=
+        f"""{[title.decode('utf-8') for title in MONITOR.sdiff('MOVIE')]}
+    """)
+    def list(self, request, *args, **kwargs):
+        REDIS_LIST = [
+            title.decode('utf-8')
+            for title in REDIS.keys()
+            if REDIS.get(title) == b'T'
+        ]
+        return JsonResponse({'keyword': REDIS_LIST})
+
+    @swagger_auto_schema(request_body=KeywordSerializer)
+    def create(self, request, *args, **kwargs):
+        serializer = KeywordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        for keyword in serializer.data['keyword']:
+            REDIS.set(keyword, 'T')
+        return HttpResponse(status=201)
+
+    def destroy(self, request, pk, *args, **kwargs):
+        REDIS.delete(pk)
         return HttpResponse(status=204)

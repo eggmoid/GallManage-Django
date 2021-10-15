@@ -8,6 +8,7 @@ from .views import (
     PostViewSet,
     RankingViewSet,
     SyncViewSet,
+    RedisViewSet,
 )
 
 router = routers.DefaultRouter(trailing_slash=False)
@@ -18,6 +19,7 @@ router.register(r'keywords', KeywordViewSet, basename='keyword')
 router.register(r'posts', PostViewSet, basename='post')
 router.register(r'ranking', RankingViewSet, basename='ranking')
 router.register(r'sync', SyncViewSet, basename='sync')
+router.register(r'redis', RedisViewSet, basename='redis')
 
 urlpatterns = [
     url(r'^', include(router.urls)),

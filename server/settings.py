@@ -318,3 +318,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MONITOR_URL = get_secret('MONITOR_URL')
 MONITOR = redis.Redis.from_url(MONITOR_URL)
+REDIS_LOCATION = get_secret('REDIS_LOCATION')
+REDIS = redis.Redis.from_url(REDIS_LOCATION)
