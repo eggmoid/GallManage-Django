@@ -17,6 +17,7 @@ from sentry_sdk.integrations.logging import ignore_logger
 import json
 import os
 from os.path import join
+import re
 import redis
 
 from pathlib import Path
@@ -45,14 +46,22 @@ def get_secret(setting, secrets=secrets):
         raise KeyError(f'Set the {setting} environment variable')
 
 
+def traces_sampler(sampling_context):
+    path = re.findall(r'(\w+)', sampling_context['wsgi_environ']['PATH_INFO'])
+    if path and path[0] in ['admin', 'api', 'swagger']:
+        return 1
+    return 0
+
+
 sentry_sdk.init(
     dsn=get_secret('SENTRY_DSN'),
     integrations=[DjangoIntegration()],
 
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production.
-    traces_sample_rate=1.0,
+    # # Set traces_sample_rate to 1.0 to capture 100%
+    # # of transactions for performance monitoring.
+    # # We recommend adjusting this value in production.
+    # traces_sample_rate=1.0,
+    traces_sampler=traces_sampler,
 
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
