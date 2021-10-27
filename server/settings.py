@@ -47,6 +47,10 @@ def get_secret(setting, secrets=secrets):
 
 
 def traces_sampler(sampling_context):
+    if not sampling_context.get('wsgi_environ'):
+        return 1
+    if not sampling_context['wsgi_environ'].get('PATH_INFO'):
+        return 1
     path = re.findall(r'(\w+)', sampling_context['wsgi_environ']['PATH_INFO'])
     if path and path[0] in ['admin', 'api', 'swagger']:
         return 1
