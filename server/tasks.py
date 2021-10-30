@@ -1,6 +1,7 @@
+import json
 import os
-import requests
 import re
+import requests
 
 from celery import Celery
 from celery.schedules import crontab
@@ -47,7 +48,7 @@ def map_post(e: str):
 
 
 @app.task
-def save_detail(num, refresh=False):
+def save_detail(num, refresh=False, ban=False):
     from api.models.detail_post.models import DetailPost
     from api.models.post.models import Post
     # URL = f"https://gall.dcinside.com/mgallery/board/view/?id=girlgroup&no={num}"
@@ -78,6 +79,8 @@ def save_detail(num, refresh=False):
                    resp != "" and _resp.status_code == 200):
         detail.detail = resp
         detail.save()
+    if ban:
+        requests.post("http://localhost:4567/block", data=json.dumps({'no': num}))
 
 
 @app.task
@@ -87,6 +90,7 @@ def sync_gall(page=1, page_end=0):
     URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&list_num=100&page="
     MONITOR = settings.MONITOR
     MONITOR_TITLE = [title.decode('utf-8') for title in MONITOR.sdiff('TITLE')]
+    MONITOR_BAN = [title.decode('utf-8') for title in MONITOR.sdiff('BAN')]
     try:
         last_num = Post.objects.last().num
     except AttributeError:
@@ -123,7 +127,9 @@ def sync_gall(page=1, page_end=0):
             post.gall_count = e[6]
             post.gall_recommend = e[7]
             post.save()
-            if [e[1] for title in MONITOR_TITLE if re.search(title, e[1])]:
+            if [e[1] for title in MONITOR_BAN if re.search(title, e[1])]:
+                save_detail.delay(e[0], True, True)
+            elif [e[1] for title in MONITOR_TITLE if re.search(title, e[1])]:
                 save_detail.delay(e[0], True)
         page += 1
 
@@ -136,7 +142,7 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'daytime': {
         'task': 'server.tasks.sync_gall',
-        'schedule': crontab(minute='*/3', hour='8-23,0'),
+        'schedule': crontab(minute='*/2', hour='8-23,0'),
     },
     'nignttime': {
         'task': 'server.tasks.sync_gall',
