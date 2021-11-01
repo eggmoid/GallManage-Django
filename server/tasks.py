@@ -146,6 +146,6 @@ app.conf.beat_schedule = {
     },
     'nignttime': {
         'task': 'server.tasks.sync_gall',
-        'schedule': crontab(minute='*/5', hour='1-7'),
+        'schedule': crontab(minute='*/3', hour='1-7'),
     },
 }
