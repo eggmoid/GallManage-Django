@@ -1,0 +1,3 @@
+[submodule "GallManage-Ban"]
+	path = GallManage-Ban
+	url = https://github.com/eggmoid/GallManage-Ban.git
