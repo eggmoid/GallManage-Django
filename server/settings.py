@@ -249,6 +249,10 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+DATABASE_ROUTERS = [
+    'core.dbrouter.MultiDBRouter',
+]
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
@@ -259,6 +263,13 @@ DATABASES = {
         'OPTIONS': {
             'threaded': True,
         }
+    },
+    'mariadb': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'testdb',
+        'USER': 'uplus',
+        'PASSWORD': 'passwd',
+        'HOST': '127.0.0.1',
     }
 }
 

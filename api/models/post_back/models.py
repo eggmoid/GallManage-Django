@@ -13,5 +13,6 @@ class BPost(models.Model):
 
     class Meta:
         db_table = 'bpost'
-        verbose_name = '게시글 (백업) - 클릭자제 (매우 느림)'
-        verbose_name_plural = '글 목록 (백업) - 클릭자제 (매우 느림)'
+        app_label = "mariadb"
+        verbose_name = '게시글 (백업) - 검색결과 정렬 금지 (매우 느림)'
+        verbose_name_plural = '글 목록 (백업) - 검색결과 정렬 금지 (매우 느림)'
