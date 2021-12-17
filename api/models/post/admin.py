@@ -35,7 +35,6 @@ class PostAdmin(admin.ModelAdmin):
         'TITLE',
         'name',
         'idip',
-        'date',
         'comment_count',
         'gall_count',
         'gall_recommend',

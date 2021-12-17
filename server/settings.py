@@ -259,6 +259,13 @@ DATABASES = {
         'OPTIONS': {
             'threaded': True,
         }
+    },
+    'mariadb': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'testdb',
+        'USER': 'uplus',
+        'PASSWORD': 'passwd',
+        'HOST': '127.0.0.1',
     }
 }
 
