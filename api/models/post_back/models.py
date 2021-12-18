@@ -13,5 +13,6 @@ class BPost(models.Model):
 
     class Meta:
         db_table = 'bpost'
+        # app_label = "mongodb"
         verbose_name = '게시글 (백업) - 클릭자제 (매우 느림)'
         verbose_name_plural = '글 목록 (백업) - 클릭자제 (매우 느림)'

@@ -158,6 +158,11 @@ LOGGING = {
             'handlers': ['django.server'],
             'level': 'INFO',
             'propagate': False,
+        },
+        'djongo': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propogate': False,
         }
     }
 }
@@ -249,6 +254,9 @@ WSGI_APPLICATION = 'server.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+DATABASE_ROUTERS = [
+    'core.dbrouter.MultiDBRouter',
+]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.oracle',
@@ -260,12 +268,25 @@ DATABASES = {
             'threaded': True,
         }
     },
-    'mariadb': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'testdb',
-        'USER': 'uplus',
-        'PASSWORD': 'passwd',
-        'HOST': '127.0.0.1',
+    # 'mariadb': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'NAME': 'testdb',
+    #     'USER': 'uplus',
+    #     'PASSWORD': 'passwd',
+    #     'HOST': '127.0.0.1',
+    # },
+    'mongodb': {
+        'ENGINE': 'djongo',
+        'ENFORCE_SCHEMA': True,
+        'NAME': 'mname',
+        'CONN_MAX_AGE': None,
+        'CLIENT': {
+            'host': '127.0.0.1',
+            'port': 27017,
+            'username': 'mongoadmin',
+            'password': 'secret',
+            'authSource': 'admin',
+        }
     }
 }
 
