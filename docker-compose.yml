@@ -12,14 +12,15 @@ services:
     restart: always
   celery:
     image: django
-    command: sh -c "celery -A server worker -l INFO"
+    command: sh -c "celery -A server worker -l WARN"
     environment:
       TZ: "Asia/Seoul"
+      DJANGO_LOG_LEVEL: "INFO"
     network_mode: "host"
     restart: always
   celery-beat:
     image: django
-    command: sh -c "celery -A server beat -l INFO"
+    command: sh -c "celery -A server beat -l WARN"
     environment:
       TZ: "Asia/Seoul"
     network_mode: "host"
@@ -31,13 +32,13 @@ services:
       TZ: "Asia/Seoul"
     network_mode: "host"
     restart: always
-  sinatra:
-    image: sinatra
-    command: sh -c "bundle exec rackup --host 0.0.0.0 -p 4567"
-    environment:
-      TZ: "Asia/Seoul"
-    network_mode: "host"
-    restart: always
+  # sinatra:
+  #   image: sinatra
+  #   command: sh -c "bundle exec rackup --host 0.0.0.0 -p 4567"
+  #   environment:
+  #     TZ: "Asia/Seoul"
+  #   network_mode: "host"
+  #   restart: always
   nginx:
     image: nginx:latest
     volumes:
