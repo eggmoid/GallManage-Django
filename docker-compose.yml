@@ -44,8 +44,10 @@ services:
     volumes:
       - "./nginx/default.conf:/etc/nginx/conf.d/default.conf"
       - "./nginx/nginx.conf:/etc/nginx/nginx.conf"
-      - "./nginx/certificate.crt:/etc/ssl/certificate.crt"
-      - "./nginx/private.key:/etc/ssl/private.key"
+      - "./nginx/fullchain.pem:/etc/letsencrypt/live/oeoe.kro.kr/fullchain.pem"
+      - "./nginx/privkey.pem:/etc/letsencrypt/live/oeoe.kro.kr/privkey.pem"
+      # - "./nginx/certificate.crt:/etc/ssl/certificate.crt"
+      # - "./nginx/private.key:/etc/ssl/private.key"
       - "./static:/etc/nginx/django/static"
     command: nginx -g 'daemon off;'
     environment:
