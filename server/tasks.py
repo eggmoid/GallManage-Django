@@ -84,13 +84,11 @@ def save_detail(num, refresh=False, ban=False):
 
 
 @app.task
-def sync_gall(page=1, page_end=0):
+def sync_gall(page=1, page_end=1):
     from api.models.post.models import Post
     from django.conf import settings
-    URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&list_num=100&page="
+    URL = "https://gall.dcinside.com/mgallery/board/lists/?id=girlgroup&page="
     MONITOR = settings.MONITOR
-    MONITOR_TITLE = [title.decode('utf-8') for title in MONITOR.sdiff('TITLE')]
-    MONITOR_BAN = [title.decode('utf-8') for title in MONITOR.sdiff('BAN')]
     try:
         last_num = Post.objects.last().num
     except AttributeError:
@@ -103,22 +101,21 @@ def sync_gall(page=1, page_end=0):
                                      resp,
                                      flags=re.DOTALL)))
         last_num = source[0][0]
-    while True:
-        resp = requests.get(f"{URL}{page}",
-                            headers={
-                                "User-Agent": "Mozilla/5.0"
-                            }).text
-        source = list(
-            map(map_post, re.findall('ub-content.*?</tr>',
-                                     resp,
-                                     flags=re.DOTALL)))
-        if page_end and page > page_end:
-            return
-        if not page_end and not len([e for e in source if e[0] > last_num]):
-            return
-
-        for e in source:
-            (post, _) = Post.objects.get_or_create(num=e[0])
+    resp = requests.get(f"{URL}{page}",
+                        headers={
+                            "User-Agent": "Mozilla/5.0"
+                        }).text
+    source = list(
+        map(map_post, re.findall('ub-content.*?</tr>',
+                                 resp,
+                                 flags=re.DOTALL)))
+    # source.sort()
+    # source.reverse()
+    for e in source:
+        try:
+            post = Post.objects.get(num=e[0])
+        except Post.DoesNotExist:
+            post = Post(num=e[0])
             post.title = e[1]
             post.name = e[2]
             post.idip = e[3]
@@ -127,11 +124,8 @@ def sync_gall(page=1, page_end=0):
             post.gall_count = e[6]
             post.gall_recommend = e[7]
             post.save()
-            if [e[1] for title in MONITOR_BAN if re.search(title, e[1])]:
-                save_detail.delay(e[0], True, True)
-            elif [e[1] for title in MONITOR_TITLE if re.search(title, e[1])]:
-                save_detail.delay(e[0], True)
-        page += 1
+            save_detail.delay(e[0], False)
+    return
 
 
 @app.task(bind=True)
@@ -142,10 +136,11 @@ def debug_task(self):
 app.conf.beat_schedule = {
     'daytime': {
         'task': 'server.tasks.sync_gall',
-        'schedule': crontab(minute='*/2', hour='8-23,0'),
+        # 'schedule': crontab(minute='*/2', hour='8-23,0'),
+        'schedule': 6,
     },
-    'nignttime': {
-        'task': 'server.tasks.sync_gall',
-        'schedule': crontab(minute='*/3', hour='1-7'),
-    },
+    # 'nignttime': {
+    #     'task': 'server.tasks.sync_gall',
+    #     'schedule': crontab(minute='*/3', hour='1-7'),
+    # },
 }

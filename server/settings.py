@@ -251,14 +251,12 @@ WSGI_APPLICATION = 'server.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.oracle',
-        'NAME': get_secret('DB_SERVICE'),
+        'ENGINE': 'django.db.backends.postgresql',
+        'HOST': '127.0.0.1',
+        'NAME': 'purple',
         'USER': get_secret('DB_USER'),
         'PASSWORD': get_secret('DB_PASSWORD'),
         'CONN_MAX_AGE': None,
-        'OPTIONS': {
-            'threaded': True,
-        }
     }
 }
 
